@@ -1,0 +1,12 @@
+{
+    "ID": "A9146CE1489147D29A46F32D2EB9FB5E",
+    "ActionKeyword": "weather",
+    "Name": "Weather",
+    "Description": "Get weather information for a location",
+    "Author": "adielBm",
+    "Version": "1.0.0",
+    "Language": "csharp",
+    "Website": "https://github.com/adielBm/Flow.Launcher.Plugin.Weather",
+    "IcoPath": "icon.png",
+    "ExecuteFileName": "Flow.Launcher.Plugin.Weather.dll"
+}
