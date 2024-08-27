@@ -7,6 +7,6 @@
     "Version": "1.0.0",
     "Language": "csharp",
     "Website": "https://github.com/adielBm/Flow.Launcher.Plugin.Weather",
-    "IcoPath": "icon.png",
+    "IcoPath": "Images\\weather-icon.png",
     "ExecuteFileName": "Flow.Launcher.Plugin.Weather.dll"
 }

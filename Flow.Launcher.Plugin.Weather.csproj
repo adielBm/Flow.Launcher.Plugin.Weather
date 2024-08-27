@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF> <!-- Enable WPF support -->
     <AssemblyName>Flow.Launcher.Plugin.Weather</AssemblyName>
     <PackageId>Flow.Launcher.Plugin.Weather</PackageId>
     <Authors>adielBm</Authors>
@@ -23,9 +24,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Flow.Launcher.Plugin" Version="4.1.0" />
+    <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
   </ItemGroup>
 
 </Project>
