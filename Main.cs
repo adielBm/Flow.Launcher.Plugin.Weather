@@ -9,20 +9,18 @@ using OpenMeteo;
 using System.Threading;
 using System.Windows.Controls;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using Flow.Launcher.Plugin.SharedCommands;
 
 namespace Flow.Launcher.Plugin.Weather
 {
-    public class Main : IAsyncPlugin // , ISettingProvider
+    public class Main : IAsyncPlugin, ISettingProvider, IContextMenu
     {
         private string ClassName => GetType().Name;
         private PluginInitContext _context;
-        // private Settings _settings;
-
-        // public Control CreateSettingPanel()
-        // {
-        //     return new WeatherSettings(_settings);
-        // }
-
+        private Settings _settings;
+        private bool UseFahrenheit => _settings.useFahrenheit;
 
         private readonly OpenMeteoClient _client;
         public Main()
@@ -30,10 +28,11 @@ namespace Flow.Launcher.Plugin.Weather
             _client = new OpenMeteoClient();
         }
 
-        public Task InitAsync(PluginInitContext context)
+        // Initialise query url
+        public async Task InitAsync(PluginInitContext context)
         {
             _context = context;
-            return Task.CompletedTask;
+            _settings = _context.API.LoadSettingJsonStorage<Settings>();
         }
 
         public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
@@ -78,25 +77,29 @@ namespace Flow.Launcher.Plugin.Weather
                 // Set custom options
                 WeatherForecastOptions options = new WeatherForecastOptions
                 {
-                    Temperature_Unit = TemperatureUnitType.celsius
-                    // Temperature_Unit = _settings?.TemperatureUnit == "Celsius" ? TemperatureUnitType.celsius : TemperatureUnitType.fahrenheit,
+                    Temperature_Unit = TemperatureUnitType.celsius,
                 };
 
                 if (cityData?.Name != null)
                 {
-                    WeatherForecast weatherData = await _client.QueryAsync(cityData?.Name/* , options */);
-
-                    // _context.API.ShowMsgError(ClassName, $"WEATHER: c:{cityData.Latitude}:{cityData.Longitude}; w:{weatherData.Latitude}:{weatherData.Longitude}; {weatherData?.Daily?.Apparent_temperature_max[0]}, {weatherData?.Current?.Apparent_temperature}");
+                    WeatherForecast weatherData = await _client.QueryAsync(cityData?.Name);
 
                     token.ThrowIfCancellationRequested();
 
-                    if (weatherData != null)
+                    if (weatherData != null && weatherData.Current?.Apparent_temperature != null)
                     {
+
+                        float temp = (float)weatherData.Current.Apparent_temperature;
+                        if (UseFahrenheit)
+                        {
+                            temp = (float)CelsiusToFahrenheit(temp);
+                        }
+
                         return new List<Result>
                             {
                                 new Result
                                 {
-                                    Title = $"{weatherData?.Current?.Apparent_temperature}°C",
+                                    Title = $"{temp}{(UseFahrenheit ? "°F" : "°C")}",
                                     SubTitle = $"{cityData.Name}, {cityData.Country}",
                                     IcoPath = "Images\\weather-icon.png"
                                 }
@@ -130,46 +133,22 @@ namespace Flow.Launcher.Plugin.Weather
         {
             // _httpClient.Dispose();
         }
+        public Control CreateSettingPanel() => new SettingsControl(_settings);
+
+        public List<Result> LoadContextMenus(Result selectedResult)
+        {
+            var results = new List<Result>
+            {
+
+            };
+
+            return results;
+        }
+
+        // celsius to fahrenheit
+        private double CelsiusToFahrenheit(double celsius)
+        {
+            return celsius * 9 / 5 + 32;
+        }
     }
-
-    /*  public partial class WeatherSettings : UserControl
-     {
-         private readonly Settings _settings;
-         private bool _contentLoaded;
-
-         public WeatherSettings(Settings settings)
-         {
-             _settings = settings;
-             InitializeComponent();
-             this.DataContext = settings;
-         }
-
-         private void InitializeComponent()
-         {
-             if (!_contentLoaded)
-             {
-                 _contentLoaded = true;
-                 Uri resourceLocator = new Uri("/Flow.Launcher.Plugin.Weather;component/WeatherSettings.xaml", UriKind.Relative);
-                 System.Windows.Application.LoadComponent(this, resourceLocator);
-             }
-         }
-     } */
-
-
-    /*  public class Settings
-     {
-         public string TemperatureUnit { get; set; } = "Celsius";
-
-         [JsonIgnore]
-         public List<string> TemperatureUnits { get; } = new List<string> { "Celsius", "Fahrenheit" };
-     }
-
-     public static class Temperature
-     {
-         public static double CelsiusToFahrenheit(double celsius)
-         {
-             return (celsius * 9 / 5) + 32;
-         }
-     } */
-
 }

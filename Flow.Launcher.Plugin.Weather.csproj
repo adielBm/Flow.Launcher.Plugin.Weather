@@ -1,24 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF> <!-- Enable WPF support -->
     <AssemblyName>Flow.Launcher.Plugin.Weather</AssemblyName>
     <PackageId>Flow.Launcher.Plugin.Weather</PackageId>
     <Authors>adielBm</Authors>
     <PackageProjectUrl>https://github.com/adielBm/Flow.Launcher.Plugin.Weather</PackageProjectUrl>
     <RepositoryUrl>https://github.com/adielBm/Flow.Launcher.Plugin.Weather</RepositoryUrl>
-    <PackageTags>flow-launcher flow-plugin</PackageTags>
+    <PackageTags>flow-launcher flow-plugin weather</PackageTags>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Include="plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -26,7 +26,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Flow.Launcher.Plugin" Version="4.1.0" />
-    <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
+        <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Content Include="Images\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+    <ItemGroup>
+    <None Update="SettingsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
 </Project>

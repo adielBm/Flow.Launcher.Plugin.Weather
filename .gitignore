@@ -1,2 +1,5 @@
 bin
 obj
+.vs
+makefile
+Flow.Launcher.Plugin.Weather.generated.sln
