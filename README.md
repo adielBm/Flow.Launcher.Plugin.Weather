@@ -11,4 +11,5 @@ this is **very initial** version of a [Flow Launcher](https://github.com/Flow-La
 
 - add more info rather than only current temperature
 - add setting option for default city
-- add icons for weather codes
+- add icons for weather codes (maybe from https://github.com/erikflowers/weather-icons )
+- fix build warnings
