@@ -37,24 +37,32 @@ namespace Flow.Launcher.Plugin.Weather
 
         public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
         {
-            if (string.IsNullOrWhiteSpace(query.Search))
+            var searchTerm = query.Search;
+
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                // return empty
-                return new List<Result>
+                if (!string.IsNullOrWhiteSpace(_settings.defaultLocation))
                 {
-                    new Result
-                    {
-                        Title = "Please enter a city name",
-                        IcoPath = "Images\\weather-icon.png"
-                    }
-                };
+                    searchTerm = _settings.defaultLocation;
+                }
+                else
+                {
+                    return new List<Result>
+                        {
+                            new Result
+                            {
+                                Title = "Please enter a city name",
+                                IcoPath = "Images\\weather-icon.png"
+                            }
+                        };
+                }
             }
             try
             {
                 token.ThrowIfCancellationRequested();
 
                 // Get city data
-                GeocodingOptions geocodingData = new GeocodingOptions(query.Search);
+                GeocodingOptions geocodingData = new GeocodingOptions(searchTerm);
                 var geocodingResult = await _client.GetLocationDataAsync(geocodingData);
 
                 if (geocodingResult?.Locations == null)
@@ -65,7 +73,8 @@ namespace Flow.Launcher.Plugin.Weather
                             {
                                 Title = "City not found",
                                 SubTitle = "Please check the city name and try again",
-                                IcoPath = "Images\\weather-icon.png"
+                                IcoPath = "Images\\weather-icon.png",
+                                AutoCompleteText = "",
                             }
                         };
                 }
@@ -99,6 +108,7 @@ namespace Flow.Launcher.Plugin.Weather
                             {
                                 new Result
                                 {
+                                    AutoCompleteText = "",
                                     Title = $"{temp}{(UseFahrenheit ? "°F" : "°C")}",
                                     SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} | {cityData.Name}, {cityData.Country}",
                                     IcoPath = $"Images\\{(_settings.useBlackIcons ? "b-" : "")}{GetWeatherSvgFilename((int)(weatherData?.Current?.Weathercode))}"
@@ -122,7 +132,8 @@ namespace Flow.Launcher.Plugin.Weather
                     new() {
                         Title = $"err: {ex.Message}, {ex.Source}",
                         SubTitle = $"{ex.InnerException}, {ex.StackTrace}",
-                        IcoPath = "Images\\weather-icon.png"
+                        IcoPath = "Images\\weather-icon.png",
+                        AutoCompleteText = "",
                     }
                 };
             }

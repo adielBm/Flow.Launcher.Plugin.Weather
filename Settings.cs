@@ -10,6 +10,8 @@ namespace Flow.Launcher.Plugin.Weather
     {
         public bool useFahrenheit {  get; set; } = false;
         public bool useBlackIcons { get; set; } = false;
+        public string defaultLocation { get; set; } = null;
+
     }
 }
 

@@ -4,24 +4,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Height="100"
+    Height="Auto"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Path=_settings}"
     d:DesignHeight="300"
     d:DesignWidth="500"
     mc:Ignorable="d">
-    <Grid Margin="40,30,10,0">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CheckBox
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0">Default Location (City)</TextBlock>
+        <TextBox
+            Margin="40,0,0,0"
             Grid.Row="0"
-            Padding="8,0,0,0"
-            Content="Use Fahrenheit (°F) instead of Celsius (°C)"
-            IsChecked="{Binding useFahrenheit}"/>
+            Grid.Column="1"
+            Text="{Binding defaultLocation}"/>
         <CheckBox
             Grid.Row="1"
-            Padding="8,0,0,0"
+            Content="Use Fahrenheit (°F)"
+            IsChecked="{Binding useFahrenheit}"/>
+        <CheckBox
+            Grid.Row="2"
             Content="Use Black Icons"
             IsChecked="{Binding useBlackIcons}"/>
     </Grid>
