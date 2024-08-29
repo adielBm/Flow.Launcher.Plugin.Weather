@@ -26,7 +26,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Flow.Launcher.Plugin" Version="4.1.0" />
-        <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
+    <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
+        <PackageReference Include="openmeteo_sdk" Version="1.14.1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\*.png">

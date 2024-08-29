@@ -100,9 +100,9 @@ namespace Flow.Launcher.Plugin.Weather
                                 new Result
                                 {
                                     Title = $"{temp}{(UseFahrenheit ? "°F" : "°C")}",
-                                    SubTitle = $"{cityData.Name}, {cityData.Country}",
-                                    IcoPath = "Images\\weather-icon.png"
-                                }
+                                    SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} | {cityData.Name}, {cityData.Country}",
+                                    IcoPath = $"Images\\{(_settings.useBlackIcons ? "b-" : "")}{GetWeatherSvgFilename((int)(weatherData?.Current?.Weathercode))}"
+                                },
                             };
 
                     }
@@ -150,5 +150,42 @@ namespace Flow.Launcher.Plugin.Weather
         {
             return celsius * 9 / 5 + 32;
         }
+
+        public string GetWeatherSvgFilename(int weatherCode)
+        {
+            return weatherCode switch
+            {
+                0 => "wi-day-sunny.png",// Clear sky
+                1 => "wi-day-sunny-overcast.png",// Mainly clear
+                2 => "wi-day-cloudy.png",// Partly cloudy
+                3 => "wi-cloudy.png",// Overcast
+                45 => "wi-fog.png",// Fog
+                48 => "wi-day-fog.png",// Depositing rime Fog
+                51 => "wi-sprinkle.png",// Light drizzle
+                53 => "wi-showers.png",// Moderate drizzle
+                55 => "wi-raindrops.png",// Dense drizzle
+                56 => "wi-day-rain-mix.png",// Light freezing drizzle
+                57 => "wi-rain-mix.png",// Dense freezing drizzle
+                61 => "wi-rain.png",// Slight rain
+                63 => "wi-rain-wind.png",// Moderate rain
+                65 => "wi-rain.png",// Heavy rain
+                66 => "wi-rain-mix.png",// Light freezing rain
+                67 => "wi-sleet.png",// Heavy freezing rain
+                71 => "wi-snowflake-cold.png",// Slight snow fall
+                73 => "wi-snow.png",// Moderate snow fall
+                75 => "wi-snow.png",// Heavy snow fall
+                77 => "wi-snow-wind.png",// Snow grains
+                80 => "wi-showers.png",// Slight rain showers
+                81 => "wi-storm-showers.png",// Moderate rain showers
+                82 => "wi-thunderstorm.png",// Violent rain showers
+                85 => "wi-snowflake-cold.png",// Slight snow showers
+                86 => "wi-snow.png",// Heavy snow showers
+                95 => "wi-thunderstorm.png",// Thunderstorm
+                96 => "wi-thunderstorm.png",// Thunderstorm with light hail
+                99 => "wi-thunderstorm.png",// Thunderstorm with heavy hail
+                _ => "wi-na.png",// Invalid weather code
+            };
+        }
+
     }
 }

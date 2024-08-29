@@ -19,5 +19,10 @@
             Padding="8,0,0,0"
             Content="Use Fahrenheit (°F) instead of Celsius (°C)"
             IsChecked="{Binding useFahrenheit}"/>
+        <CheckBox
+            Grid.Row="1"
+            Padding="8,0,0,0"
+            Content="Use Black Icons"
+            IsChecked="{Binding useBlackIcons}"/>
     </Grid>
 </UserControl>
