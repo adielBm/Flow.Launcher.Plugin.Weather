@@ -14,10 +14,10 @@ pm install https://github.com/adielBm/Flow.Launcher.Plugin.Weather/releases/down
 
 - [ ] add more info rather than only current temperature
 - [x] add setting option for default city
-- [x] add icons for weather codes (maybe from https://github.com/erikflowers/weather-icons )
+- [x] add icons for weather codes
 - [ ] fix build warnings
 
 # Credits
 
-- https://github.com/erikflowers/weather-icons for weather icons in `Images` folder
+- https://github.com/basmilius/weather-icons for weather icons in `Images` folder
 - https://github.com/AlienDwarf/open-meteo-dotnet and https://open-meteo.com/ for weather data 
