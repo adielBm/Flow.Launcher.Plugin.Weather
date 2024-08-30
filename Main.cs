@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using System.Net.Http;
-using System.Text.Json;
+// using System.Text.Json.Serialization;
+// using System.Net.Http;
+// using System.Text.Json;
 using System.Threading.Tasks;
 using Flow.Launcher.Plugin;
 using OpenMeteo;
 using System.Threading;
 using System.Windows.Controls;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Windows.Controls;
+// using System.IO;
+// using System.Text.RegularExpressions;
+// using System.Windows.Controls;
 using Flow.Launcher.Plugin.SharedCommands;
+// using System.Drawing.Text;
+// using System.Runtime.InteropServices;
+// using System.Windows;
 
 namespace Flow.Launcher.Plugin.Weather
 {
@@ -21,6 +24,7 @@ namespace Flow.Launcher.Plugin.Weather
         private PluginInitContext _context;
         private Settings _settings;
         private bool UseFahrenheit => _settings.useFahrenheit;
+
 
         private readonly OpenMeteoClient _client;
         public Main()
@@ -33,6 +37,8 @@ namespace Flow.Launcher.Plugin.Weather
         {
             _context = context;
             _settings = _context.API.LoadSettingJsonStorage<Settings>();
+
+
         }
 
         public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
@@ -104,17 +110,18 @@ namespace Flow.Launcher.Plugin.Weather
                             temp = (float)CelsiusToFahrenheit(temp);
                         }
 
-                        return new List<Result>
-                            {
-                                new Result
-                                {
-                                    AutoCompleteText = "",
-                                    Title = $"{temp}{(UseFahrenheit ? "°F" : "°C")}",
-                                    SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} | {cityData.Name}, {cityData.Country}",
-                                    IcoPath = $"Images\\{(_settings.useBlackIcons ? "b-" : "")}{GetWeatherSvgFilename((int)(weatherData?.Current?.Weathercode))}"
-                                },
-                            };
+                        bool isNight = weatherData?.Current?.Is_day == 0;
 
+                        return new List<Result>
+                        {
+                        new Result
+                            {
+                                AutoCompleteText = "",
+                                Title = $"{temp}{(UseFahrenheit ? "°F" : "°C")}",
+                                SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} | {cityData.Name}, {cityData.Country}",
+                                IcoPath = $"Images\\{GetWeatherIcon((int)(weatherData?.Current?.Weathercode), isNight)}",
+                            }
+                        };
                     }
 
                 }
@@ -162,39 +169,61 @@ namespace Flow.Launcher.Plugin.Weather
             return celsius * 9 / 5 + 32;
         }
 
-        public string GetWeatherSvgFilename(int weatherCode)
+        public string GetWeatherIcon(int code, bool isNight = false)
         {
-            return weatherCode switch
+            if (isNight)
             {
-                0 => "wi-day-sunny.png",// Clear sky
-                1 => "wi-day-sunny-overcast.png",// Mainly clear
-                2 => "wi-day-cloudy.png",// Partly cloudy
-                3 => "wi-cloudy.png",// Overcast
-                45 => "wi-fog.png",// Fog
-                48 => "wi-day-fog.png",// Depositing rime Fog
-                51 => "wi-sprinkle.png",// Light drizzle
-                53 => "wi-showers.png",// Moderate drizzle
-                55 => "wi-raindrops.png",// Dense drizzle
-                56 => "wi-day-rain-mix.png",// Light freezing drizzle
-                57 => "wi-rain-mix.png",// Dense freezing drizzle
-                61 => "wi-rain.png",// Slight rain
-                63 => "wi-rain-wind.png",// Moderate rain
-                65 => "wi-rain.png",// Heavy rain
-                66 => "wi-rain-mix.png",// Light freezing rain
-                67 => "wi-sleet.png",// Heavy freezing rain
-                71 => "wi-snowflake-cold.png",// Slight snow fall
-                73 => "wi-snow.png",// Moderate snow fall
-                75 => "wi-snow.png",// Heavy snow fall
-                77 => "wi-snow-wind.png",// Snow grains
-                80 => "wi-showers.png",// Slight rain showers
-                81 => "wi-storm-showers.png",// Moderate rain showers
-                82 => "wi-thunderstorm.png",// Violent rain showers
-                85 => "wi-snowflake-cold.png",// Slight snow showers
-                86 => "wi-snow.png",// Heavy snow showers
-                95 => "wi-thunderstorm.png",// Thunderstorm
-                96 => "wi-thunderstorm.png",// Thunderstorm with light hail
-                99 => "wi-thunderstorm.png",// Thunderstorm with heavy hail
-                _ => "wi-na.png",// Invalid weather code
+                return code switch
+                {
+                    0 => "clear-night.png",
+                    1 or 2 => "partly-cloudy-night.png",
+                    3 => "overcast-night.png",
+                    45 => "fog-night.png",
+                    48 => "haze-night.png",
+                    51 or 53 or 55 => "partly-cloudy-night-drizzle.png",
+                    56 or 57 => "partly-cloudy-night-sleet.png",
+                    61 or 63 or 65 => "partly-cloudy-night-rain.png",
+                    66 or 67 => "partly-cloudy-night-sleet.png",
+                    71 or 73 or 75 => "partly-cloudy-night-snow.png",
+                    77 => "snow.png",
+                    80 or 81 => "partly-cloudy-night-rain.png",
+                    82 => "thunderstorms-night-rain.png",
+                    85 or 86 => "partly-cloudy-night-snow.png",
+                    95 => "thunderstorms-night.png",
+                    96 or 99 => "thunderstorms-night-snow.png",
+                    31 or 32 or 33 or 34 => "dust-night.png",
+                    _ => GetDayIcon(code),
+                };
+            }
+
+            return GetDayIcon(code);
+        }
+
+
+        private string GetDayIcon(int code)
+        {
+            return code switch
+            {
+                0 => "clear-day.png",
+                1 or 2 => "partly-cloudy-day.png",
+                3 => "overcast-day.png",
+                45 => "fog-day.png",
+                48 => "haze-day.png",
+                51 or 53 or 55 => "drizzle.png",
+                56 or 57 => "partly-cloudy-day-sleet.png",
+                61 or 63 or 65 => "rain.png",
+                66 => "partly-cloudy-day-sleet.png",
+                67 => "sleet.png",
+                71 => "snowflake.png",
+                73 or 75 => "snow.png",
+                77 => "snow.png",
+                80 or 81 => "partly-cloudy-day-rain.png",
+                82 => "thunderstorms-day-rain.png",
+                85 or 86 => "partly-cloudy-day-snow.png",
+                95 => "thunderstorms-day.png",
+                96 or 99 => "thunderstorms-day-snow.png",
+                31 or 32 or 33 or 34 => "dust-day.png",
+                _ => "not-available.png",
             };
         }
 
