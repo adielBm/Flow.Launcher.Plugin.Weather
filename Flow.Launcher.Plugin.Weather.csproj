@@ -30,6 +30,11 @@
         <PackageReference Include="openmeteo_sdk" Version="1.14.1" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Images\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
