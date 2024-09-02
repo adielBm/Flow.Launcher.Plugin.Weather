@@ -21,3 +21,4 @@ pm install https://github.com/adielBm/Flow.Launcher.Plugin.Weather/releases/down
 
 - https://github.com/basmilius/weather-icons for weather icons in `Images` folder
 - https://github.com/AlienDwarf/open-meteo-dotnet and https://open-meteo.com/ for weather data 
+
