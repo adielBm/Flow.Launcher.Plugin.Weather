@@ -1,24 +1,32 @@
-- this is **very initial** version of a [Flow Launcher](https://github.com/Flow-Launcher/Flow.Launcher) weather plugin, and it may not work as expected.
-- it's not yet published to the Flow Launcher plugin store (https://github.com/Flow-Launcher/Flow.Launcher.PluginsManifest). 
-- i'd like if you could improve it. 
+- This is the **initial** version of a [Flow Launcher](https://github.com/Flow-Launcher/Flow.Launcher) weather plugin, so it may not work as expected.
+- I would appreciate any improvements you can make.
 
 ![](screenshot.png)
 
 # Install 
 
+You can install this plugin by running the following command in Flow Launcher:
+
 ```
-pm install https://github.com/adielBm/Flow.Launcher.Plugin.Weather/releases/download/v1.0.0/Flow.Launcher.Plugin.Weather.zip
+pm install weather
+```
+
+Or by using the URL of the latest release:
+
+```
+pm install https://github.com/adielBm/Flow.Launcher.Plugin.Weather/releases/latest/download/Flow.Launcher.Plugin.Weather.zip
 ```
 
 # TODO
 
-- [ ] add more info rather than only current temperature
-- [x] add setting option for default city
-- [x] add icons for weather codes
-- [ ] fix build warnings
+- [ ] Add more information besides just the current temperature
+- [x] Add a setting option for the default city
+- [x] Add icons for weather codes
+- [ ] Fix build warnings
 
 # Credits
 
-- https://github.com/basmilius/weather-icons for weather icons in `Images` folder
-- https://github.com/AlienDwarf/open-meteo-dotnet and https://open-meteo.com/ for weather data 
-
+- https://nominatim.openstreetmap.org/ for geocoding data
+- https://open-meteo.com/ for weather data  
+- https://github.com/basmilius/weather-icons for weather icons in the `Images` folder
+- [https://github.com/boxbot6/easy-weather-icons-font](https://github.com/boxbot6/easy-weather-icons-font/tree/main/downloads/easy_weather_icons_font/easy_weather_icons_font_(fonts)/fonts) for weather font icons in the `Resources` folder
