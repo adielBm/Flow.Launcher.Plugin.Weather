@@ -30,9 +30,14 @@
             Grid.Row="1"
             Content="Use Fahrenheit (°F)"
             IsChecked="{Binding useFahrenheit}"/>
-        <CheckBox
-            Grid.Row="2"
-            Content="Use Black Icons"
-            IsChecked="{Binding useBlackIcons}"/>
+        <CheckBox Grid.Row="2"
+                IsChecked="{Binding useGlyphs}">
+            <TextBlock>
+        <Run Text="Use Glyphs "/>
+        <Run Text="(requires enabling 'Use Segoe Fluent Icons' in 'Appearance')"
+                        FontSize="12"/>
+            </TextBlock>
+        </CheckBox>
+
     </Grid>
 </UserControl>

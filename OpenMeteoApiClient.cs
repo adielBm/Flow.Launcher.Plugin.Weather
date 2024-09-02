@@ -38,16 +38,16 @@ namespace Flow.Launcher.Plugin.Weather
                     Current = new CurrentWeather
                     {
                         Time = currentWeather.GetProperty("time").GetDateTime(),
-                        Temperature2m = currentWeather.GetProperty("temperature_2m").GetDouble(),
-                        ApparentTemperature = currentWeather.GetProperty("apparent_temperature").GetDouble(),
+                        Temperature2m = Math.Round(currentWeather.GetProperty("temperature_2m").GetDouble()),
+                        ApparentTemperature = Math.Round(currentWeather.GetProperty("apparent_temperature").GetDouble()),
                         IsDay = currentWeather.GetProperty("is_day").GetInt32(),
                         WeatherCode = currentWeather.GetProperty("weather_code").GetInt32()
                     },
                     Daily = new DailyWeather
                     {
                         Time = dailyWeather.GetProperty("time").EnumerateArray().Select(d => d.GetDateTime()).ToArray(),
-                        ApparentTemperatureMax = dailyWeather.GetProperty("apparent_temperature_max").EnumerateArray().Select(d => d.GetDouble()).ToArray(),
-                        ApparentTemperatureMin = dailyWeather.GetProperty("apparent_temperature_min").EnumerateArray().Select(d => d.GetDouble()).ToArray()
+                        ApparentTemperatureMax = dailyWeather.GetProperty("apparent_temperature_max").EnumerateArray().Select(d => Math.Round(d.GetDouble())).ToArray(),
+                        ApparentTemperatureMin = dailyWeather.GetProperty("apparent_temperature_min").EnumerateArray().Select(d => Math.Round(d.GetDouble())).ToArray()
                     }
                 };
             }

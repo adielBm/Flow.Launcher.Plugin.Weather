@@ -1,24 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Flow.Launcher.Plugin.SharedCommands;
 using System.Drawing.Text;
 using System.IO;
 using System.Threading.Tasks;
-using Flow.Launcher.Plugin;
-using OpenMeteo;
 using System.Threading;
 using System.Windows.Controls;
-// using System.Text.Json.Serialization;
-// using System.Net.Http;
-// using System.Text.Json;
-// using System.IO;
-// using System.Text.RegularExpressions;
-// using System.Windows.Controls;
-// using System.Drawing.Text;
-// using System.Runtime.InteropServices;
-// using System.Windows;
 using System.Net.Http;
 using System.Text.Json;
+
+using Flow.Launcher.Plugin;
+using Flow.Launcher.Plugin.SharedCommands;
 
 namespace Flow.Launcher.Plugin.Weather
 {
@@ -106,18 +97,7 @@ namespace Flow.Launcher.Plugin.Weather
 
                 token.ThrowIfCancellationRequested();
 
-
-
-                // Set custom options
-                // WeatherForecastOptions options = new WeatherForecastOptions
-                // {
-                //     Temperature_Unit = TemperatureUnitType.celsius,
-                // };
-
-
-
                 WeatherForecast weatherData = await _weather_client.GetForecastAsync(cityDetails.Latitude, cityDetails.Longitude);
-                // string weatherData = await _weather_client.GetForecastAsync(cityDetails.Latitude, cityDetails.Longitude);
 
                 token.ThrowIfCancellationRequested();
 
@@ -134,8 +114,6 @@ namespace Flow.Launcher.Plugin.Weather
                             }
                         };
                 }
-
-
 
                 // Get temperature
                 double temp = weatherData.Current.Temperature2m;
@@ -160,8 +138,6 @@ namespace Flow.Launcher.Plugin.Weather
                         Glyph: GetWeatherIconUnicode((int)(weatherData?.Current?.WeatherCode), isNight)
                     );
                 }
-
-
 
                 // subtitle
                 var subTitle = $"{cityDetails.Name}";
