@@ -26,7 +26,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Flow.Launcher.Plugin" Version="4.1.0" />
-        <PackageReference Include="OpenMeteo.dotnet" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\*.png">
