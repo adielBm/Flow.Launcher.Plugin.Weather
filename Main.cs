@@ -7,7 +7,6 @@ using System.Threading;
 using System.Windows.Controls;
 using System.Net.Http;
 using System.Text.Json;
-
 using Flow.Launcher.Plugin;
 using Flow.Launcher.Plugin.SharedCommands;
 
@@ -15,35 +14,18 @@ namespace Flow.Launcher.Plugin.Weather
 {
     public class Main : IAsyncPlugin, ISettingProvider, IContextMenu
     {
-        private string ClassName => GetType().Name;
-        private PluginInitContext _context;
-        private Settings _settings;
-        private bool UseFahrenheit => _settings.useFahrenheit;
-
-        // OLD client
-        // private readonly OpenMeteoClient _client;
-
-        // NEW client
-        private readonly OpenMeteoApiClient _weather_client;
-
-        private readonly CityLookupService cityService;
-
-        public Main()
+        private PluginInitContext context;
+        private Settings settings;
+        private bool UseFahrenheit => settings.useFahrenheit;
+        private OpenMeteoApiClient weatherClient;
+        private CityLookupService cityService;
+        public Task InitAsync(PluginInitContext context)
         {
-            // OLD client
-            // _client = new OpenMeteoClient();
-            // NEW client
-            _weather_client = new OpenMeteoApiClient();
-            cityService = new CityLookupService();
-        }
-
-        // Initialise query url
-        public async Task InitAsync(PluginInitContext context)
-        {
-            _context = context;
-            _settings = _context.API.LoadSettingJsonStorage<Settings>();
-
-
+            this.context = context;
+            settings = context.API.LoadSettingJsonStorage<Settings>();
+            weatherClient = new OpenMeteoApiClient(context);
+            cityService = new CityLookupService(context);
+            return Task.CompletedTask;
         }
 
         public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
@@ -52,9 +34,9 @@ namespace Flow.Launcher.Plugin.Weather
 
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                if (!string.IsNullOrWhiteSpace(_settings.defaultLocation))
+                if (!string.IsNullOrWhiteSpace(settings.defaultLocation))
                 {
-                    searchTerm = _settings.defaultLocation;
+                    searchTerm = settings.defaultLocation;
                 }
                 else
                 {
@@ -71,13 +53,6 @@ namespace Flow.Launcher.Plugin.Weather
             try
             {
                 token.ThrowIfCancellationRequested();
-
-                // Get city data
-                // OLD 
-                // GeocodingOptions geocodingData = new GeocodingOptions(searchTerm);
-                // GeocodingApiResponse geocodingResult = await _client.GetLocationDataAsync(geocodingData);
-
-                // NEW
                 var cityDetails = await cityService.GetCityDetailsAsync(searchTerm);
 
                 if (cityDetails == null || cityDetails?.Latitude == null || cityDetails?.Longitude == null)
@@ -94,10 +69,9 @@ namespace Flow.Launcher.Plugin.Weather
                         };
                 }
 
-
                 token.ThrowIfCancellationRequested();
 
-                WeatherForecast weatherData = await _weather_client.GetForecastAsync(cityDetails.Latitude, cityDetails.Longitude);
+                WeatherForecast weatherData = await weatherClient.GetForecastAsync(cityDetails.Latitude, cityDetails.Longitude);
 
                 token.ThrowIfCancellationRequested();
 
@@ -128,9 +102,9 @@ namespace Flow.Launcher.Plugin.Weather
 
                 // Set glyph (if enabled)
                 GlyphInfo glyph = null;
-                if (_settings.useGlyphs)
+                if (settings.useGlyphs)
                 {
-                    string fontPath = Path.Combine(_context.CurrentPluginMetadata.PluginDirectory, "Resources", "easy.ttf");
+                    string fontPath = Path.Combine(context.CurrentPluginMetadata.PluginDirectory, "Resources", "easy.ttf");
                     PrivateFontCollection privateFonts = new PrivateFontCollection();
                     privateFonts.AddFontFile(fontPath);
                     glyph = new GlyphInfo(
@@ -184,7 +158,7 @@ namespace Flow.Launcher.Plugin.Weather
         {
             // _httpClient.Dispose();
         }
-        public Control CreateSettingPanel() => new SettingsControl(_settings);
+        public Control CreateSettingPanel() => new SettingsControl(settings);
 
         public List<Result> LoadContextMenus(Result selectedResult)
         {
@@ -316,16 +290,19 @@ namespace Flow.Launcher.Plugin.Weather
     {
         public string DisplayName { get; set; }
         public string Name { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
+
 
     public class CityLookupService
     {
         private static readonly HttpClient client = new HttpClient();
+        private PluginInitContext context;
 
-        public CityLookupService()
+        public CityLookupService(PluginInitContext context)
         {
+            this.context = context;
             client.DefaultRequestHeaders.Add("User-Agent", "Flow.Launcher.Plugin.Weather");
         }
 
@@ -352,8 +329,8 @@ namespace Flow.Launcher.Plugin.Weather
             {
                 DisplayName = cityInfo.GetProperty("display_name").GetString(),
                 Name = cityInfo.GetProperty("name").GetString(),
-                Latitude = double.Parse(cityInfo.GetProperty("lat").GetString()),
-                Longitude = double.Parse(cityInfo.GetProperty("lon").GetString())
+                Latitude = cityInfo.GetProperty("lat").GetString(),
+                Longitude = cityInfo.GetProperty("lon").GetString()
             };
         }
 
