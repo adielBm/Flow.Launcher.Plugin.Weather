@@ -157,11 +157,41 @@ namespace Flow.Launcher.Plugin.Weather
                                 // SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} ({weatherData?.Current?.Weathercode}) ({dayOrNight}) | {cityData.Name}, {cityData.Country}",
                                 IcoPath = $"Images\\{GetWeatherIcon((int)(weatherData?.Current?.WeatherCode), isNight)}.png",
                                 Glyph = glyph,
+                            },
+                        new Result
+                            {
+                                Title = $"{weatherData.Current.WindSpeed} {weatherData.CurrentUnits.WindSpeed}",
+                                SubTitle = $"Wind speed",
+                                IcoPath = "Images\\wind.png",
+                            },
+                        new Result
+                            {
+                                Title = $"{weatherData.Current.Precipitation} {weatherData.CurrentUnits.Precipitation}",
+                                SubTitle = $"Precipitation",
+                                IcoPath = "Images\\raindrop-measure.png",
+                            },
+                        new Result
+                            {
+                                Title = $"{weatherData.Current.SurfacePressure} {weatherData.CurrentUnits.SurfacePressure}",
+                                SubTitle = $"Pressure",
+                                IcoPath = "Images\\barometer.png",
+                            },
+                        new Result
+                            {
+                                Title = $"{weatherData.Current.RelativeHumidity} {weatherData.CurrentUnits.RelativeHumidity}",
+                                SubTitle = $"Relative humidity",
+                                IcoPath = "Images\\humidity.png"
+                            },
+                        new Result
+                            {
+                                Title = $"{weatherData.Daily.UvIndexMax[0]}",
+                                SubTitle = $"UV Index",
+                                IcoPath = $"Images\\uv-index{weatherData.Daily.UvIndexMax[0]}.png"
                             }
                         };
             }
             catch (OperationCanceledException)
-            {
+            {   
                 // return empty
                 return new List<Result>();
             }
