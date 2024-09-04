@@ -186,7 +186,7 @@ namespace Flow.Launcher.Plugin.Weather
                             {
                                 Title = $"{weatherData.Daily.UvIndexMax[0]}",
                                 SubTitle = $"UV Index",
-                                IcoPath = $"Images\\uv-index{weatherData.Daily.UvIndexMax[0]}.png"
+                                IcoPath = $"Images\\uv-index-{weatherData.Daily.UvIndexMax[0]}.png"
                             }
                         };
             }
