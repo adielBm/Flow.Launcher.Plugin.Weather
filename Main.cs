@@ -12,6 +12,9 @@ using Flow.Launcher.Plugin.SharedCommands;
 
 namespace Flow.Launcher.Plugin.Weather
 {
+    /// <summary>
+    /// Represents the main class of the Weather plugin.
+    /// </summary>
     public class Main : IAsyncPlugin, ISettingProvider, IContextMenu
     {
         private PluginInitContext context;
@@ -42,8 +45,7 @@ namespace Flow.Launcher.Plugin.Weather
                 {
                     return new List<Result>
                         {
-                            new Result
-                            {
+                            new() {
                                 Title = "Please enter a city name",
                                 IcoPath = "Images\\weather-icon.png"
                             }
@@ -59,8 +61,7 @@ namespace Flow.Launcher.Plugin.Weather
                 {
                     return new List<Result>
                         {
-                            new Result
-                            {
+                            new() {
                                 Title = "City not found",
                                 SubTitle = "Please check the city name and try again",
                                 IcoPath = "Images\\weather-icon.png",
@@ -79,8 +80,7 @@ namespace Flow.Launcher.Plugin.Weather
                 {
                     return new List<Result>
                         {
-                            new Result
-                            {
+                            new() {
                                 Title = $"Weather data not found for {cityDetails.Name}",
                                 SubTitle = $"Please try again later",
                                 IcoPath = "Images\\weather-icon.png",
@@ -124,11 +124,9 @@ namespace Flow.Launcher.Plugin.Weather
                 // Result
                 return new List<Result>
                         {
-                        new Result
-                            {
+                        new() {
                                 Title = $"{temp} {(UseFahrenheit ? "°F" : "°C")}",
                                 SubTitle = subTitle,
-                                // SubTitle = $"{_client.WeathercodeToString((int)(weatherData?.Current?.Weathercode))} ({weatherData?.Current?.Weathercode}) ({dayOrNight}) | {cityData.Name}, {cityData.Country}",
                                 IcoPath = $"Images\\{GetWeatherIcon((int)(weatherData?.Current?.WeatherCode), isNight)}.png",
                                 Glyph = glyph,
                             }
@@ -151,7 +149,6 @@ namespace Flow.Launcher.Plugin.Weather
                     }
                 };
             }
-            return new List<Result>();
         }
 
         public void Dispose()
@@ -162,16 +159,12 @@ namespace Flow.Launcher.Plugin.Weather
 
         public List<Result> LoadContextMenus(Result selectedResult)
         {
-            var results = new List<Result>
-            {
-
-            };
-
+            var results = new List<Result> { };
             return results;
         }
 
         // celsius to fahrenheit
-        private double CelsiusToFahrenheit(double celsius)
+        private static double CelsiusToFahrenheit(double celsius)
         {
             return celsius * 9 / 5 + 32;
         }
@@ -228,7 +221,7 @@ namespace Flow.Launcher.Plugin.Weather
         }
 
 
-        private string GetDayIcon(int wmoCode)
+        private static string GetDayIcon(int wmoCode)
         {
             return wmoCode switch
             {
@@ -285,7 +278,6 @@ namespace Flow.Launcher.Plugin.Weather
 
     }
 
-
     public class CityDetails
     {
         public string DisplayName { get; set; }
@@ -295,17 +287,29 @@ namespace Flow.Launcher.Plugin.Weather
     }
 
 
+    /// <summary>
+    /// Service for looking up city details using the OpenStreetMap Nominatim API.
+    /// </summary>
     public class CityLookupService
     {
-        private static readonly HttpClient client = new HttpClient();
-        private PluginInitContext context;
+        private static readonly HttpClient client = new();
+        private readonly PluginInitContext context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CityLookupService"/> class.
+        /// </summary>
+        /// <param name="context">The plugin initialization context.</param>
         public CityLookupService(PluginInitContext context)
         {
             this.context = context;
             client.DefaultRequestHeaders.Add("User-Agent", "Flow.Launcher.Plugin.Weather");
         }
 
+        /// <summary>
+        /// Gets the details of a city asynchronously.
+        /// </summary>
+        /// <param name="cityName">The name of the city to look up.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the city details.</returns>
         public async Task<CityDetails> GetCityDetailsAsync(string cityName)
         {
             string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(cityName)}&format=json&limit=1&accept-language=en";

@@ -8,14 +8,13 @@ namespace Flow.Launcher.Plugin.Weather
 {
     public class OpenMeteoApiClient
     {
-        private static readonly HttpClient client = new HttpClient();
-
-        private PluginInitContext context;
+        private static readonly HttpClient client = new();
+        private const string BaseUrl = "https://api.open-meteo.com/v1/forecast";
+        private readonly PluginInitContext context;
 
         public OpenMeteoApiClient(PluginInitContext context)
         {
             this.context = context;
-            context.API.LogInfo(nameof(OpenMeteoApiClient), "Initializing OpenMeteoApiClient");
             client.DefaultRequestHeaders.Add("User-Agent", "Flow.Launcher.Plugin.Weather");
         }
 
@@ -23,19 +22,11 @@ namespace Flow.Launcher.Plugin.Weather
         {
             string url = $"{BaseUrl}?latitude={latitude}&longitude={longitude}&current=temperature_2m,apparent_temperature,is_day,weather_code&daily=apparent_temperature_max,apparent_temperature_min&forecast_days=1";
 
-            context.API.LogInfo(nameof(OpenMeteoApiClient), $"Request URL: {url}");
-
             try
             {
                 var response = await client.GetAsync(url);
 
-                context.API.LogInfo(nameof(OpenMeteoApiClient), $"Response Status Code: {response.StatusCode}");
-
-                // response.EnsureSuccessStatusCode();  // Throws if status code is not 2xx
-
                 var responseString = await response.Content.ReadAsStringAsync();
-
-                // context.API.LogInfo(nameof(OpenMeteoApiClient), $"Response Content: {responseString}");
 
                 var json = JsonDocument.Parse(responseString);
                 var root = json.RootElement;
@@ -80,7 +71,7 @@ namespace Flow.Launcher.Plugin.Weather
             }
         }
 
-        private const string BaseUrl = "https://api.open-meteo.com/v1/forecast";
+
     }
 
 
