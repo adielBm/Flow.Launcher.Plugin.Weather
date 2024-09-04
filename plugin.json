@@ -4,7 +4,7 @@
     "Name": "Weather",
     "Description": "Get weather information for a location",
     "Author": "adielBm",
-    "Version": "1.1.0",
+    "Version": "1.2.0",
     "Language": "csharp",
     "Website": "https://github.com/adielBm/Flow.Launcher.Plugin.Weather",
     "IcoPath": "Images\\weather-icon.png",
